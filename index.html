@@ -85,7 +85,7 @@
 <script type="text/html" id="productsTableTpl">
     <thead>
     <tr>
-        <th class="sortName sortAsc">Name</th>
+        <th class="sortName sortAsc {{- sortCol === 'sortName'  isAsc ? 'dd' : 'ddd' }}">Name</th>
         <th class="sortPrice">Price</th>
         <th class="sortActions">Actions</th>
     </tr>
@@ -115,6 +115,10 @@
 
         function renderAll() {
             productsTable.html(renderProductsTable(productItems));
+        }
+
+        function changeSortIcons() {
+
         }
 
         /* *********************** Code flow *************************/
