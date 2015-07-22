@@ -5,6 +5,24 @@
     <title>ActiveTable</title>
     <link rel="stylesheet" type="text/css" href="css/bootstrap.min.css">
     <link rel="stylesheet" type="text/css" href="css/bootstrap-theme.min.css">
+
+    <style>
+        .productsTable {
+            margin-top: 1px;
+        }
+
+        .productsTable th {
+            cursor: pointer;
+        }
+
+        .sortAsc:after {
+            content: url('img/trigran_asc.png');
+        }
+
+        .sortDesc:after {
+            content: url('img/trigran_desc.png');
+        }
+    </style>
 </head>
 <body>
 
@@ -22,12 +40,106 @@
     </div>
     <div class="row">
         <div class="col-xs-12">
+            <div class="col-xs-offset-4 col-xs-4">
+                <div class="pull-left">
+                    <h2>Product`s table</h2>
+                </div>
+                <div class="pull-right">
+                    <button class="btn btn-success btnAddProduct">Add product</button>
+                </div>
 
+                <table class="table table-bordered table-hover productsTable" id="productsTable">
+                    <!-- Dynamically generated content -->
+                </table>
+            </div>
         </div>
     </div>
 </div>
 
+
+
 <script type="text/javascript" src="js/jquery-1.11.3.min.js"></script>
+<script type="text/javascript" src="js/lodash.min.js"></script>
 <script type="text/javascript" src="js/bootstrap.min.js"></script>
+<script type="text/javascript">
+    var productItems = [
+        {
+            name: 'Галоши',
+            price: 1200,
+            count: 2
+        },
+        {
+            name: 'Кеды',
+            price: 2200,
+            count: 3
+        },
+        {
+            name: 'Ботинки',
+            price: 45630,
+            count: 10
+        }
+    ];
+
+</script>
+
+<script type="text/html" id="productsTableTpl">
+    <thead>
+    <tr>
+        <th class="sortName sortAsc">Name</th>
+        <th class="sortPrice">Price</th>
+        <th class="sortActions">Actions</th>
+    </tr>
+    </thead>
+    <tbody>
+    <% _.each(productItems, function(item) { %>
+        <tr>
+            <td><%= item.name %>&nbsp;&nbsp;&nbsp;&nbsp;<%= item.count %></td>
+            <td><%= item.price * item.count %> $</td>
+            <td><a href="#" class="btn btn-info">Edit</a>&nbsp;&nbsp;&nbsp;&nbsp;<a href="#" class="btn btn-danger">Delete</a></td>
+        </tr>
+    <% }); %>
+    </tbody>
+</script>
+
+<script>
+    $(function() {
+        var productsTableTpl = $('#productsTableTpl').html();
+        var productsTable = $('#productsTable');
+        var sortOrder = 'asc';
+        var sortColumn = 'name';
+        window.productsTableRender = _.template(productsTableTpl);
+
+        function renderProductsTable(products) {
+            return productsTableRender(products);
+        }
+
+        function renderAll() {
+            productsTable.html(renderProductsTable(productItems));
+        }
+
+        /* *********************** Code flow *************************/
+
+        renderAll();
+
+        productsTable.on('click', 'th.sortName', function() {
+            productItems = _.sortByOrder(productItems, ['name'], [sortOrder]);
+            sortOrder = sortOrder == 'asc' ? 'desc' : 'asc';
+            renderAll();
+        });
+
+        var btnAddProduct = $('button.btnAddProduct');
+        btnAddProduct.on('click', function() {
+            productItems.push({
+                name: 'Галошы',
+                price: 1200,
+                count: 1
+            });
+
+            renderAll();
+        });
+
+    });
+</script>
+
 </body>
 </html>
