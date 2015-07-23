@@ -1,0 +1,40 @@
+.table-products {
+    margin-top: 1px;
+
+}
+
+.table-products th {
+    cursor: pointer;
+    position: relative;
+}
+
+.th-sorted-asc:after {
+    content: url('../img/trigran_asc.png');
+    position: absolute;
+    right: 5px;
+}
+
+.th-sorted-desc:after {
+    content: url('../img/trigran_desc.png');
+    position: absolute;
+    right: 5px;
+}
+
+.th-actions {
+    width: 150px;
+}
+
+.th-id {
+    width: 15%;
+}
+
+.controls {
+    margin-bottom: 50px;;
+}
+
+.input-filter {
+    height: 33px;
+    /* border: 1px solid black; */
+    padding: 5px;
+    width: 320px;
+}
