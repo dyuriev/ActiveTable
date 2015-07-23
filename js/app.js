@@ -40,19 +40,16 @@ $(function() {
     }
 
     function renderAll(items) {
-        if (_.isObject(items)) {
-            productsTable.html(renderProductsTable(items));
-        } else {
-            productsTable.html(renderProductsTable(productItems));
-        }
+        var renderItems = _.isObject(items) ? items : productItems;
+        productsTable.html(renderProductsTable(renderItems));
     }
 
     function getMaxID() {
         var max =  _.max(productItems, function(item) {
             return item.id;
-        }).id;
+        });
 
-        return Number.isInteger(max) ? max : 0;
+        return max && Number.isInteger(max.id) ? max.id : 0;
     }
 
     function filterByProductName(name) {
