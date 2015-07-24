@@ -25,7 +25,7 @@ $(function() {
     var productsTable = $('#table-products');
     var sortOrder = 'asc';
     var sortType = 'id';
-    window.productsTableRender = _.template(productsTableTpl);
+    var productsTableRender = _.template(productsTableTpl);
 
     function renderProductsTable(products) {
         return productsTableRender({ products: products });
@@ -34,7 +34,6 @@ $(function() {
     function changeSortIcons(sortType, sortOrder) {
         var columns = $('th.th-sorted-column');
         var column = $('th[data-sort-type="' + sortType + '"]');
-
         columns.removeClass('th-sorted-asc th-sorted-desc');
         column.addClass('th-sorted-' + sortOrder);
     }
@@ -64,14 +63,12 @@ $(function() {
         sortOrder = 'desc';
     }
 
-
     /* *********************** Code flow *************************/
     init();
 
     productsTable.on('click', 'th.th-sorted-column', function() {
         var sortType = $(this).attr('data-sort-type');
         productItems = _.sortByOrder(productItems, [sortType], [sortOrder]);
-        console.log(productItems);
         renderAll();
         changeSortIcons(sortType, sortOrder);
         sortOrder = sortOrder == 'asc' ? 'desc' : 'asc';
@@ -91,11 +88,9 @@ $(function() {
 
     productsTable.on('click', '.btn-delete-item', function() {
         var itemID = $(this).attr('data-item-id');
-        console.log(itemID);
         productItems = _.filter(productItems,  function(item) {
             return item.id != itemID;
         });
-        console.log(productItems);
         renderAll();
     });
 
@@ -105,4 +100,31 @@ $(function() {
         var items = filterByProductName(searchString);
         renderAll(items);
     });
+
+    var $fieldsForValidate = $('form[data-checker-validate]').find('[data-checker-rules]');
+
+    $fieldsForValidate.on('focusout', function() {
+        var $item = $(this);
+        var rules = $item.attr('data-checker-rules').split(',');
+
+        $(rules).each(function(i, rule) {
+            var attrs = [];
+            var arg;
+
+            if (rule.indexOf('=') > 0) {
+                attrs = rule.split('=');
+                rule = attrs[0];
+                arg = attrs[1];
+            }
+            Checker.validateField(rule, $item, arg);
+        });
+
+        Checker.showErrorBlock($item);
+    });
+
+    $fieldsForValidate.on('focusin', function() {
+        var item = $(this);
+        Checker.hideErrorBlock(item);
+    });
+
 }());

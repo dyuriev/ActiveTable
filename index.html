@@ -20,29 +20,70 @@
         </nav>
     </div>
     <div class="row">
-
-            <div class="col-xs-offset-4 col-xs-4">
-                <div class="controls">
-                    <div class="pull-left">
-                        <input type="text" class="input-filter" placeholder="Live filter by product name">
-                        <!-- <a href="#" class="btn btn-info btn-filter">Filter</a>-->
-                    </div>
-                    <div class="pull-right">
-                        <button class="btn btn-success btnAddProduct">Add product</button>
-                    </div>
+        <div class="col-xs-offset-4 col-xs-4">
+            <div class="controls">
+                <div class="pull-left">
+                    <input type="text" class="input-filter" placeholder="Live filter by product name">
+                    <!-- <a href="#" class="btn btn-info btn-filter">Filter</a>-->
                 </div>
-                <div class="clearfix"></div>
-                <table class="table table-bordered table-hover table-products" id="table-products">
-                    <!-- Dynamically generated table content -->
-                </table>
+                <div class="pull-right">
+                    <button class="btn btn-success btnAddProduct" data-toggle="modal" data-target="#addProductModal">Add product</button>
+                </div>
             </div>
+            <div class="clearfix"></div>
+            <table class="table table-bordered table-hover table-products" id="table-products">
+                <!-- Dynamically generated table content -->
+            </table>
+        </div>
+    </div>
 
+    <!-- Modal -->
+    <div class="modal fade" id="addProductModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title" id="myModalLabel">Add new product</h4>
+                </div>
+                <div class="modal-body">
+                    <form id="formAddItem" method="get" action="" data-checker-validate="true" enctype="application/x-www-form-urlencoded">
+                        <div class="form-group">
+                            <label for="productName" class="required-filed">Name:</label>
+                            <input type="text" class="form-control" name="productName" id="productName" placeholder="Product name" data-checker-rules="required,maxlength=15">
+                        </div>
+                        <div class="form-group">
+                            <label for="supplierEmail" class="required-filed">Supplier email:</label>
+                            <input type="email" class="form-control input-email" name="supplierEmail" id="supplierEmail" placeholder="Email" data-checker-rules="required,email">
+                        </div>
+                        <div class="form-group">
+                            <label for="productCount" class="required-filed">Count:</label>
+                            <input type="text" class="form-control input-count" name="productCount" id="productCount" value="1" data-checker-rules="required,numeric">
+                        </div>
+                        <div class="form-group">
+                            <label for="productPrice" class="required-filed">Price:</label>
+                            <input type="text" class="form-control input-price" name="productPrice" id="productPrice" data-checker-rules="required,numeric">
+                        </div>
+                        <div class="form-group">
+                            <label for="validateSelect" class="required-filed">Select</label>
+                            <select id="validateSelect" name="validateSelect" class="form-control input-select">
+                                <option disabled="disabled" selected="selected">Options</option>
+                                <option value="empty">Empty</option>
+                                <option value="radio">Radio</option>
+                                <option value="checkbox">Checkbox</option>
+                            </select>
+                        </div>
+                        <div class="pull-left">
+                            <button type="submit" class="btn btn-primary btn-submit">Add / Update</button>
+                        </div>
+                        <div class="clearfix"></div>
+                    </form>
+                </div>
+            </div>
+        </div>
     </div>
 </div>
 
-<script type="text/javascript" src="js/jquery-1.11.3.min.js"></script>
-<script type="text/javascript" src="js/lodash.min.js"></script>
-<script type="text/javascript" src="js/bootstrap.min.js"></script>
+
 
 <!-- *********************** JS Templates ************************* -->
 <script type="text/html" id="tpl-table-products">
@@ -56,81 +97,33 @@
     </thead>
     <tbody>
     <% _.each(products, function(item) { %>
-        <tr>
-            <td><%- item.id %></td>
-            <td><%- item.name %>&nbsp;&nbsp;&nbsp;&nbsp;<%- item.count %></td>
-            <td><%- item.price %> $</td>
-            <td><a href="#" class="btn btn-info btn-edit-item" data-item-id="<%= item.id %>">Edit</a>&nbsp;&nbsp;&nbsp;&nbsp;<a href="#" class="btn btn-danger btn-delete-item" data-item-id="<%= item.id %>">Delete</a></td>
-        </tr>
+    <tr>
+        <td><%- item.id %></td>
+        <td><%- item.name %>&nbsp;&nbsp;&nbsp;&nbsp;<%- item.count %></td>
+        <td><%- helpers.formatMoney(item.price) %></td>
+        <td><a href="#" class="btn btn-info btn-edit-item" data-item-id="<%= item.id %>">Edit</a>&nbsp;&nbsp;&nbsp;&nbsp;<a href="#" class="btn btn-danger btn-delete-item" data-item-id="<%= item.id %>">Delete</a></td>
+    </tr>
     <% }); %>
     </tbody>
 </script>
 
-<!-- *********************** JS main code ************************* -->
-<script type="text/javascript" src="js/app.js"></script>
+<script type="text/html" id="ul-errors-block">
+    <ul class="checker-error-list" style="display: block;">
+        <% _.each(fieldErrors, function(error) { %>
+        <li><%- error %></li>
+        <% }); %>
+    </ul>
+</script>
 
-<div>
-
-</div>
-
-
-<!-- Button trigger modal -->
-<button type="button" class="btn btn-primary btn-lg" data-toggle="modal" data-target="#myModal">
-    Launch demo modal
-</button>
-
-<!-- Modal -->
-<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                <h4 class="modal-title" id="myModalLabel">Add new product</h4>
-            </div>
-            <div class="modal-body">
-                <form data-checker-validate="true">
-                    <div class="form-group">
-                        <label for="productName" class="required-filed">Name:</label>
-                        <input type="text" class="form-control" name="productName" id="productName" placeholder="Product name" data-checker-rules="required">
-                        <ul class="checker-error-list" style="display: block;">
-                            <li>gfdgdfg</li>
-                        </ul>
-                    </div>
-                    <div class="form-group">
-                        <label for="supplierEmail" class="required-filed">Supplier email:</label>
-                        <input type="email" class="form-control input-email" name="supplierEmail" id="supplierEmail" placeholder="Email" data-checker-rules="required,number">
-                    </div>
-                    <div class="form-group">
-                        <label for="productCount" class="required-filed">Count:</label>
-                        <input type="text" class="form-control input-count" name="productCount" id="productCount" value="1">
-                    </div>
-                    <div class="form-group">
-                        <label for="productPrice" class="required-filed">Price:</label>
-                        <input type="text" class="form-control input-price" name="productPrice" id="productPrice">
-                    </div>
-                    <div class="form-group">
-                        <label for="validateSelect" class="required-filed">Select</label>
-                        <select id="validateSelect" name="validateSelect" class="form-control input-select">
-                            <option disabled="disabled" selected="selected">Options</option>
-                            <option value="empty">Empty</option>
-                            <option value="radio">Radio</option>
-                            <option value="checkbox">Checkbox</option>
-                        </select>
-                    </div>
-
-
-                <div class="pull-left">
-                    <button type="submit" class="btn btn-primary">Add / Update</button>
-                </div>
-                <div class="clearfix"></div>
-                </form>
-            </div>
-
-        </div>
-    </div>
-</div>
-
-$('[data-checker-validate]').find('[data-checker-rules]');
+<!-- *********************** JS libraries and App code ************************* -->
+<script type="text/javascript" src="js/libs/jquery-1.11.3.min.js"></script>
+<script type="text/javascript" src="js/libs/lodash.min.js"></script>
+<script type="text/javascript" src="js/libs/bootstrap.min.js"></script>
+<script type="text/javascript" src="js/app/helpers.js"></script>
+<script type="text/javascript" src="js/app/checker.js"></script>
+<script type="text/javascript" src="js/app/app.js"></script>
+</body>
+</html>
 
 <!--
 <a href="#openModal">Open Modal</a>
@@ -144,5 +137,3 @@ $('[data-checker-validate]').find('[data-checker-rules]');
     </div>
 </div>
 -->
-</body>
-</html>
