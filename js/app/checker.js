@@ -37,8 +37,8 @@ var Checker = (function () {
             minlength: function(arg) {
                 return 'Min length of this field is ' + arg;
             },
-            numeric: function(arg) {
-                return 'You must input correct integer value';
+            numeric: function() {
+                return 'You must input correct numeric value';
             }
         }
         ,renderErrorBlock: function(fieldErrors) {
@@ -52,11 +52,21 @@ var Checker = (function () {
                 arg: arg
             });
         }
+        ,hasErrors: function() {
+            return this.errors.length > 0;
+        }
         ,clearErrors: function() {
             this.errors = [];
         }
+        ,hideAllErrorBlocks: function() {
+            if (_.isArray(this.errors) && this.errors.length > 0) {
+                var that = this;
+                _.forEach(this.errors, function(item) {
+                    that.hideErrorBlock(item.field);
+                });
+            }
+        }
         ,hideErrorBlock: function($field) {
-            this.clearErrors();
             $field.removeClass('error-border');
             $field.siblings('ul.checker-error-list').remove();
         }
@@ -66,9 +76,11 @@ var Checker = (function () {
 
             if (_.isArray(this.errors) && this.errors.length > 0) {
                 _.forEach(this.errors, function(item) {
-                    messagesArr.push(that.messages[item.rule](item.arg));
+                    if ($field == item.field) {
+                        messagesArr.push(that.messages[item.rule](item.arg));
+                    }
                 });
-
+                this.hideErrorBlock($field);
                 $field.addClass('error-border');
                 $field.after(this.renderErrorBlock(messagesArr));
             }

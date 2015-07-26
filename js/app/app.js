@@ -73,7 +73,7 @@ $(function() {
         changeSortIcons(sortType, sortOrder);
         sortOrder = sortOrder == 'asc' ? 'desc' : 'asc';
     });
-
+/*
     var btnAddProduct = $('button.btnAddProduct');
     btnAddProduct.on('click', function() {
         productItems.push({
@@ -85,13 +85,15 @@ $(function() {
 
         renderAll();
     });
-
+*/
     productsTable.on('click', '.btn-delete-item', function() {
-        var itemID = $(this).attr('data-item-id');
-        productItems = _.filter(productItems,  function(item) {
-            return item.id != itemID;
-        });
-        renderAll();
+        if (confirm('Are you sure you want delete this item?')) {
+            var itemID = $(this).attr('data-item-id');
+            productItems = _.filter(productItems,  function(item) {
+                return item.id != itemID;
+            });
+            renderAll();
+        }
     });
 
     var inputFilter = $('.input-filter');
@@ -101,7 +103,32 @@ $(function() {
         renderAll(items);
     });
 
-    var $fieldsForValidate = $('form[data-checker-validate]').find('[data-checker-rules]');
+    var $formValidate = $('form[data-checker-validate]');
+    var $fieldsForValidate = $formValidate.find('[data-checker-rules]');
+
+    $formValidate.on('submit', function(e) {
+        e.stopImmediatePropagation();
+        e.preventDefault();
+
+        $fieldsForValidate.each(function(i, item) {
+            $(item).trigger('focusout');
+        });
+
+        if (!Checker.hasErrors()) {
+
+
+            productItems.push({
+                id: getMaxID() + 1,
+                name: $formValidate.find('[name="productName"]').val(),
+                price: $formValidate.find('[name="productPrice"]').val(),
+                count: $formValidate.find('[name="productCount"]').val()
+            });
+
+            $fieldsForValidate.val('');
+            $('#addProductModal').modal('hide');
+            renderAll();
+        }
+    });
 
     $fieldsForValidate.on('focusout', function() {
         var $item = $(this);
@@ -124,7 +151,41 @@ $(function() {
 
     $fieldsForValidate.on('focusin', function() {
         var item = $(this);
+        Checker.clearErrors();
         Checker.hideErrorBlock(item);
+    });
+
+    var $selector = $('#selector');
+    var $radioGroup1 = $('div.radio-group1');
+    var $checkboxGroup1 = $('div.checkbox-group1');
+
+    $selector.on('change', function() {
+        var selectorVal = $(this).val();
+
+        switch (selectorVal) {
+            case 'empty':
+                $radioGroup1.hide();
+                $checkboxGroup1.hide();
+                break;
+            case 'radio':
+                $radioGroup1.show();
+                $checkboxGroup1.hide();
+                break;
+            case 'checkbox':
+                $radioGroup1.hide();
+                $checkboxGroup1.show();
+                break;
+        }
+    });
+
+    $('[name="select-checkboxes1"]').change(function() {
+        var checkboxes = $checkboxGroup1.find(':checkbox');
+
+        if($(this).is(':checked')) {
+            checkboxes.prop('checked', true);
+        } else {
+            checkboxes.prop('checked', false);
+        }
     });
 
 }());

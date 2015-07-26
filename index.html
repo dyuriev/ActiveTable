@@ -53,24 +53,73 @@
                         </div>
                         <div class="form-group">
                             <label for="supplierEmail" class="required-filed">Supplier email:</label>
-                            <input type="email" class="form-control input-email" name="supplierEmail" id="supplierEmail" placeholder="Email" data-checker-rules="required,email">
+                            <input type="text" class="form-control input-email" name="supplierEmail" id="supplierEmail" placeholder="Email" data-checker-rules="required,email">
                         </div>
                         <div class="form-group">
                             <label for="productCount" class="required-filed">Count:</label>
-                            <input type="text" class="form-control input-count" name="productCount" id="productCount" value="1" data-checker-rules="required,numeric">
+                            <input type="text" class="form-control input-count" name="productCount" id="productCount" data-checker-rules="required,numeric">
                         </div>
                         <div class="form-group">
                             <label for="productPrice" class="required-filed">Price:</label>
                             <input type="text" class="form-control input-price" name="productPrice" id="productPrice" data-checker-rules="required,numeric">
                         </div>
                         <div class="form-group">
-                            <label for="validateSelect" class="required-filed">Select</label>
-                            <select id="validateSelect" name="validateSelect" class="form-control input-select">
-                                <option disabled="disabled" selected="selected">Options</option>
-                                <option value="empty">Empty</option>
+                            <label for="selector">Select</label>
+                            <select id="selector" name="selector" class="form-control input-select">
+                                <option value="empty" selected="selected">Empty</option>
                                 <option value="radio">Radio</option>
                                 <option value="checkbox">Checkbox</option>
                             </select>
+                        </div>
+                        <div class="form-group radio-group1 hidden-group">
+                            <label>Radio Group</label>
+
+                            <div class="radio">
+                                <label>
+                                    <input type="radio" name="radio-1" value="1">
+                                    Option 1
+                                </label>
+                            </div> <!-- /.radio -->
+                            <div class="radio">
+                                <label>
+                                    <input type="radio" name="radio-1" value="2">
+                                    Option 2
+                                </label>
+                            </div> <!-- /.radio -->
+                            <div class="radio">
+                                <label>
+                                    <input type="radio" name="radio-1" value="3">
+                                    Option 3
+                                </label>
+                            </div>
+                        </div>
+                        <div class="form-group checkbox-group1 hidden-group">
+                            <label>Checkbox Group</label>
+                            <div class="checkbox">
+                                <label>
+                                    <input type="checkbox" name="select-checkboxes1">
+                                    Select All
+                                </label>
+                            </div> <!-- /.checkbox -->
+                            <hr>
+                            <div class="checkbox">
+                                <label>
+                                    <input type="checkbox" name="checkbox-1">
+                                    Option 1
+                                </label>
+                            </div> <!-- /.checkbox -->
+                            <div class="checkbox">
+                                <label>
+                                    <input type="checkbox" name="checkbox-2">
+                                    Option 2
+                                </label>
+                            </div> <!-- /.checkbox -->
+                            <div class="checkbox">
+                                <label>
+                                    <input type="checkbox" name="checkbox-3">
+                                    Option 3
+                                </label>
+                            </div> <!-- /.checkbox -->
                         </div>
                         <div class="pull-left">
                             <button type="submit" class="btn btn-primary btn-submit">Add / Update</button>
@@ -82,7 +131,6 @@
         </div>
     </div>
 </div>
-
 
 
 <!-- *********************** JS Templates ************************* -->
@@ -124,16 +172,3 @@
 <script type="text/javascript" src="js/app/app.js"></script>
 </body>
 </html>
-
-<!--
-<a href="#openModal">Open Modal</a>
-
-<div id="openModal" class="modalDialog">
-    <div>
-        <a href="#close" title="Close" class="close">X</a>
-        <h2>Modal Box</h2>
-        <p>This is a sample modal box that can be created using the powers of CSS3.</p>
-        <p>You could do a lot of things here like have a pop-up ad that shows when your website loads, or create a login/register form for users.</p>
-    </div>
-</div>
--->
