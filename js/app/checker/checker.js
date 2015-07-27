@@ -1,57 +1,23 @@
-var VALIDATORS = (function(){
-    return {
-        validators: {
-            required: function (val) {
-                return val.trim().length > 0;
-            },
-            email: function (val) {
-                var re = new RegExp(/^((([a-z]|\d|[!#\$%&'\*\+\-\/=\?\^_`{\|}~]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])+(\.([a-z]|\d|[!#\$%&'\*\+\-\/=\?\^_`{\|}~]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])+)*)|((\x22)((((\x20|\x09)*(\x0d\x0a))?(\x20|\x09)+)?(([\x01-\x08\x0b\x0c\x0e-\x1f\x7f]|\x21|[\x23-\x5b]|[\x5d-\x7e]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(\\([\x01-\x09\x0b\x0c\x0d-\x7f]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]))))*(((\x20|\x09)*(\x0d\x0a))?(\x20|\x09)+)?(\x22)))@((([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])*([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])))\.)+(([a-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(([a-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])*([a-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]))){2,6}$/i);
-                return re.test(val);
-            },
-            maxlength: function (val, arg) {
-                return val.trim().length <= arg;
-            },
-            minlength: function (val, arg) {
-                return val.trim().length > arg;
-            },
-            numeric: function (val) {
-                return $.isNumeric(val);
-            }
-        }
-        , messages: {
-            required: function () {
-                return 'This field is required';
-            },
-            email: function () {
-                return 'You must input correct email address.';
-            },
-            maxlength: function (arg) {
-                return 'Max length of this field is ' + arg;
-            },
-            minlength: function (arg) {
-                return 'Min length of this field is ' + arg;
-            },
-            numeric: function () {
-                return 'You must input correct numeric value';
-            }
-        }
-    }
-}());
+/**
+ * CHECKER main file
+ * @type {{validators, messages}}
+ */
 
-
-
-var AUDITOR = (function() {
+CHECKER.checker = (function() {
     var checkedItems = [];
     var $validatingForm;
     var $validatingFields;
     var ulErrorsBlockTpl = $('#ul-errors-block').html();
     var ulErrorBlockRender = _.template(ulErrorsBlockTpl);
 
-    function Auditor($form) {
+    var validators = CHECKER.validators.validators;
+    var messages = CHECKER.validators.messages;
+
+    function Checker($form) {
         this.init($form)
     }
 
-    Auditor.prototype.init = function($form) {
+    Checker.prototype.init = function($form) {
         if ($form.attr('data-checker-validate')) {
             $validatingForm = $form;
             $validatingFields = $validatingForm.find('[data-checker-rules]');
@@ -71,7 +37,7 @@ var AUDITOR = (function() {
         }
     };
 
-    Auditor.prototype.handleEvents = function($form, $fields) {
+    Checker.prototype.handleEvents = function($form, $fields) {
         var that = this;
 
         $fields.on('blur', function(e) {
@@ -89,7 +55,7 @@ var AUDITOR = (function() {
         });
     };
 
-    Auditor.prototype.getFieldRules = function(field) {
+    Checker.prototype.getFieldRules = function(field) {
         var $field = $(field);
         var rules = [];
         var _rules = $field.attr('data-checker-rules').split(',');
@@ -114,18 +80,18 @@ var AUDITOR = (function() {
         return rules;
     };
 
-    Auditor.prototype.renderErrorBlock = function(fieldErrors) {
+    Checker.prototype.renderErrorBlock = function(fieldErrors) {
         return ulErrorBlockRender({ fieldErrors: fieldErrors });
     };
 
-    Auditor.prototype.hideErrorTooltip = function(field) {
+    Checker.prototype.hideErrorTooltip = function(field) {
         var $field = $(field);
 
         $field.removeClass('error-border');
         $field.siblings('ul.checker-error-list').remove();
     };
 
-    Auditor.prototype.showErrorTooltip = function(field) {
+    Checker.prototype.showErrorTooltip = function(field) {
         var errorMessages = [];
         var that = this;
 
@@ -148,7 +114,7 @@ var AUDITOR = (function() {
         });
     };
 
-    Auditor.prototype.validateField = function(field) {
+    Checker.prototype.validateField = function(field) {
         var fieldValue = $(field).val();
         var hasError = false;
 
@@ -160,7 +126,7 @@ var AUDITOR = (function() {
                 _.forEach(item.rules, function(ruleItem, i) {
                     var rule = ruleItem[0];
                     var arg = ruleItem[1];
-                    var currRule = VALIDATORS.validators[rule];
+                    var currRule = validators[rule];
 
                     if (!currRule) {
                         throw new Error('Wrong rule name.');
@@ -168,7 +134,7 @@ var AUDITOR = (function() {
 
                     if (!currRule(fieldValue, arg)) {
                         item.errors.push({
-                            message: VALIDATORS.messages[rule](arg),
+                            message: messages[rule](arg),
                             rule: rule,
                             value: fieldValue,
                             arg: arg
@@ -190,7 +156,7 @@ var AUDITOR = (function() {
         return hasError;
     };
 
-    Auditor.prototype.validateAllFields = function() {
+    Checker.prototype.validateAllFields = function() {
         var that = this;
         var hasErrors = false;
 
@@ -203,21 +169,11 @@ var AUDITOR = (function() {
         return hasErrors;
     };
 
-    Auditor.prototype.getItems = function() {
+    Checker.prototype.getItems = function() {
         return checkedItems;
     };
 
     return {
-        Auditor: Auditor
+        Checker: Checker
     };
 }());
-
-
-
-/*
- $_item.on('focusout', function(e) {
-
- var rule = $_item
- that.validateField()
- });
- */

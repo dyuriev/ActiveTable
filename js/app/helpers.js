@@ -8,7 +8,8 @@ var helpers = (function () {
         log: log,
         array2JSON: array2JSON,
         JSON2Array: JSON2Array,
-        formatMoney: formatMoney
+        formatMoney: formatMoney,
+        formatMoneyBack: formatMoneyBack
     };
 
     /**
@@ -40,5 +41,15 @@ var helpers = (function () {
         var parts = string.toString().split(".");
         parts[0] = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, ",");
         return parts.join(".") + ' $';
+    }
+
+    function formatMoneyBack(val) {
+        var _val = val.replace(',','').replace(' $', '');
+
+        if ($.isNumeric(_val)) {
+            return parseFloat(_val);
+        }
+
+        return _val;
     }
 }());

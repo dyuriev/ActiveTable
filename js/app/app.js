@@ -4,19 +4,19 @@ $(function() {
         {
             id: 1,
             name: 'Boots',
-            price: 1200,
+            price: 1000,
             count: 2
         },
         {
             id: 2,
-            name: 'Кеды',
-            price: 2200,
+            name: 'T-shirt',
+            price: 50,
             count: 3
         },
         {
             id: 3,
-            name: 'Ботинки',
-            price: 45630,
+            name: 'Jeans',
+            price: 150,
             count: 10
         }
     ];
@@ -63,21 +63,33 @@ $(function() {
         sortOrder = 'desc';
     }
 
+    function openModal(modalID) {
+        var modal = $('div.dm-overlay[data-modal-id="' + modalID + '"]');
+        modal.show();
+    }
+
+    function closeModal(modalID) {
+        var modal = $('div.dm-overlay[data-modal-id="' + modalID + '"]');
+        modal.hide();
+    }
+
     /* *********************** Code flow *************************/
     init();
 
     var $formAddItem = $('#formAddItem');
-    var auditor = new AUDITOR.Auditor($formAddItem);
+    var $productPrice = $formAddItem.find('input[name="productPrice"]');
+    //var auditor = new AUDITOR.Auditor($formAddItem);
+    var auditor = new CHECKER.checker.Checker($formAddItem);
 
     $formAddItem.on('submit', function(e) {
         productItems.push({
             id: getMaxID() + 1,
             name: $formAddItem.find('[name="productName"]').val(),
-            price: $formAddItem.find('[name="productPrice"]').val(),
+            price: helpers.formatMoneyBack($formAddItem.find('[name="productPrice"]').val()),
             count: $formAddItem.find('[name="productCount"]').val()
         });
 
-        $('#addProductModal').modal('hide');
+        closeModal('modalForm');
         $(this).find('input').val('');
         renderAll();
 
@@ -85,8 +97,25 @@ $(function() {
         e.stopImmediatePropagation();
     });
 
+    $productPrice.on('focus', function() {
+        var itemVal = $.trim($(this).val());
+
+        if (itemVal.length > 0) {
+            $(this).val(helpers.formatMoneyBack(itemVal));
+        }
+    });
+
+    $productPrice.on('blur', function() {
+        var itemVal = $.trim($(this).val());
+
+        if (itemVal.length > 0 && $.isNumeric(itemVal)) {
+            $(this).val(helpers.formatMoney(itemVal));
+        }
+    });
+
     productsTable.on('click', 'th.th-sorted-column', function() {
         var sortType = $(this).attr('data-sort-type');
+        console.log(productItems);
         productItems = _.sortByOrder(productItems, [sortType], [sortOrder]);
         renderAll();
         changeSortIcons(sortType, sortOrder);
@@ -94,13 +123,19 @@ $(function() {
     });
 
     productsTable.on('click', '.btn-delete-item', function() {
-        if (confirm('Are you sure you want delete this item?')) {
-            var itemID = $(this).attr('data-item-id');
-            productItems = _.filter(productItems,  function(item) {
-                return item.id != itemID;
-            });
-            renderAll();
-        }
+        var itemID = $(this).attr('data-item-id');
+        $deleteConfirmButton = $('div[data-modal-id="modalDelete"]').find('button.btn-delete-item-confirm');
+        $deleteConfirmButton.attr('data-item-id', itemID);
+        openModal('modalDelete');
+    });
+
+    $('button.btn-delete-item-confirm').on('click', function() {
+        var itemID = $(this).attr('data-item-id');
+        productItems = _.filter(productItems,  function(item) {
+            return item.id != itemID;
+        });
+        renderAll();
+        closeModal('modalDelete');
     });
 
     var inputFilter = $('.input-filter');
@@ -141,6 +176,21 @@ $(function() {
         } else {
             checkboxes.prop('checked', false);
         }
+    });
+
+    /*$('button.close').on('click', function() {
+        closeModal($(this).attr('data-modal-id'));
+    });*/
+
+    $('[data-modal-opener]').on('click', function() {
+        var modalID = $(this).attr('data-modal-opener');
+        openModal(modalID);
+    });
+
+    $('[data-modal-closer]').on('click', function() {
+        var modalID = $(this).attr('data-modal-closer');
+        closeModal(modalID);
+        return false;
     });
 
 }());
