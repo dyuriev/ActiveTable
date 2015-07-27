@@ -66,6 +66,25 @@ $(function() {
     /* *********************** Code flow *************************/
     init();
 
+    var $formAddItem = $('#formAddItem');
+    var auditor = new AUDITOR.Auditor($formAddItem);
+
+    $formAddItem.on('submit', function(e) {
+        productItems.push({
+            id: getMaxID() + 1,
+            name: $formAddItem.find('[name="productName"]').val(),
+            price: $formAddItem.find('[name="productPrice"]').val(),
+            count: $formAddItem.find('[name="productCount"]').val()
+        });
+
+        $('#addProductModal').modal('hide');
+        $(this).find('input').val('');
+        renderAll();
+
+        e.preventDefault();
+        e.stopImmediatePropagation();
+    });
+
     productsTable.on('click', 'th.th-sorted-column', function() {
         var sortType = $(this).attr('data-sort-type');
         productItems = _.sortByOrder(productItems, [sortType], [sortOrder]);
@@ -73,19 +92,7 @@ $(function() {
         changeSortIcons(sortType, sortOrder);
         sortOrder = sortOrder == 'asc' ? 'desc' : 'asc';
     });
-/*
-    var btnAddProduct = $('button.btnAddProduct');
-    btnAddProduct.on('click', function() {
-        productItems.push({
-            id: getMaxID() + 1,
-            name: 'Галошы',
-            price: parseInt(Math.floor(Math.random() * (1000 - 50 + 1)) + 50),
-            count: parseInt(Math.floor(Math.random() * (10 - 2 + 1)) + 2)
-        });
 
-        renderAll();
-    });
-*/
     productsTable.on('click', '.btn-delete-item', function() {
         if (confirm('Are you sure you want delete this item?')) {
             var itemID = $(this).attr('data-item-id');
@@ -101,58 +108,6 @@ $(function() {
         var searchString = $(this).val();
         var items = filterByProductName(searchString);
         renderAll(items);
-    });
-
-    var $formValidate = $('form[data-checker-validate]');
-    var $fieldsForValidate = $formValidate.find('[data-checker-rules]');
-
-    $formValidate.on('submit', function(e) {
-        e.stopImmediatePropagation();
-        e.preventDefault();
-
-        $fieldsForValidate.each(function(i, item) {
-            $(item).trigger('focusout');
-        });
-
-        if (!Checker.hasErrors()) {
-
-
-            productItems.push({
-                id: getMaxID() + 1,
-                name: $formValidate.find('[name="productName"]').val(),
-                price: $formValidate.find('[name="productPrice"]').val(),
-                count: $formValidate.find('[name="productCount"]').val()
-            });
-
-            $fieldsForValidate.val('');
-            $('#addProductModal').modal('hide');
-            renderAll();
-        }
-    });
-
-    $fieldsForValidate.on('focusout', function() {
-        var $item = $(this);
-        var rules = $item.attr('data-checker-rules').split(',');
-
-        $(rules).each(function(i, rule) {
-            var attrs = [];
-            var arg;
-
-            if (rule.indexOf('=') > 0) {
-                attrs = rule.split('=');
-                rule = attrs[0];
-                arg = attrs[1];
-            }
-            Checker.validateField(rule, $item, arg);
-        });
-
-        Checker.showErrorBlock($item);
-    });
-
-    $fieldsForValidate.on('focusin', function() {
-        var item = $(this);
-        Checker.clearErrors();
-        Checker.hideErrorBlock(item);
     });
 
     var $selector = $('#selector');
