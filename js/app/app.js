@@ -5,19 +5,22 @@ $(function() {
             id: 1,
             name: 'Boots',
             price: 1000,
-            count: 2
+            count: 2,
+            email: 'coolkid00@gmail.com'
         },
         {
             id: 2,
             name: 'T-shirt',
             price: 50,
-            count: 3
+            count: 3,
+            email: 'coolkid00@gmail.com'
         },
         {
             id: 3,
             name: 'Jeans',
             price: 150,
-            count: 10
+            count: 10,
+            email: 'coolkid00@gmail.com'
         }
     ];
 
@@ -57,6 +60,18 @@ $(function() {
         });
     }
 
+    function getByID(id) {
+        return _.filter(productItems,  function(item) {
+            return item.id == id;
+        });
+    }
+
+    function getAllButID(id) {
+        return _.filter(productItems,  function(item) {
+            return item.id != id;
+        });
+    }
+
     function init() {
         renderAll();
         changeSortIcons(sortType, sortOrder);
@@ -71,6 +86,7 @@ $(function() {
     function closeModal(modalID) {
         var modal = $('div.dm-overlay[data-modal-id="' + modalID + '"]');
         modal.hide();
+        $(modal).find('input').val('');
     }
 
     /* *********************** Code flow *************************/
@@ -78,19 +94,29 @@ $(function() {
 
     var $formAddItem = $('#formAddItem');
     var $productPrice = $formAddItem.find('input[name="productPrice"]');
-    //var auditor = new AUDITOR.Auditor($formAddItem);
-    var auditor = new CHECKER.checker.Checker($formAddItem);
+    var checker = new CHECKER.checker.Checker($formAddItem);
 
     $formAddItem.on('submit', function(e) {
+
+        var itemID = $formAddItem.find('[name="productID"]').val();
+        var newID;
+
+        if (itemID) {
+            productItems = getAllButID(itemID);
+            newID = itemID;
+        } else {
+            newID = getMaxID() + 1;
+        }
+
         productItems.push({
-            id: getMaxID() + 1,
+            id: newID,
             name: $formAddItem.find('[name="productName"]').val(),
             price: helpers.formatMoneyBack($formAddItem.find('[name="productPrice"]').val()),
-            count: $formAddItem.find('[name="productCount"]').val()
+            count: $formAddItem.find('[name="productCount"]').val(),
+            email: $formAddItem.find('[name="supplierEmail"]').val()
         });
 
         closeModal('modalForm');
-        $(this).find('input').val('');
         renderAll();
 
         e.preventDefault();
@@ -127,6 +153,18 @@ $(function() {
         $deleteConfirmButton = $('div[data-modal-id="modalDelete"]').find('button.btn-delete-item-confirm');
         $deleteConfirmButton.attr('data-item-id', itemID);
         openModal('modalDelete');
+    });
+
+    productsTable.on('click', '.btn-edit-item', function() {
+        var itemID = $(this).attr('data-item-id');
+        var item = getByID(itemID)[0];
+        modalForm = $('div[data-modal-id="modalForm"]');
+        modalForm.find('[name="productName"]').val(item.name);
+        modalForm.find('[name="productPrice"]').val(item.price);
+        modalForm.find('[name="productCount"]').val(item.count);
+        modalForm.find('[name="supplierEmail"]').val(item.email);
+        modalForm.find('[name="productID"]').val(itemID);
+        openModal('modalForm');
     });
 
     $('button.btn-delete-item-confirm').on('click', function() {

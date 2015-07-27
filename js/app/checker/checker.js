@@ -7,6 +7,7 @@ CHECKER.checker = (function() {
     var checkedItems = [];
     var $validatingForm;
     var $validatingFields;
+    var invalidFields = [];
     var ulErrorsBlockTpl = $('#ul-errors-block').html();
     var ulErrorBlockRender = _.template(ulErrorsBlockTpl);
 
@@ -49,6 +50,8 @@ CHECKER.checker = (function() {
             console.log(hasValidationErrors);
 
             if (hasValidationErrors) {
+                var $firstField = $(invalidFields[0]);
+                $firstField.focus();
                 e.preventDefault();
                 e.stopImmediatePropagation();
             }
@@ -160,8 +163,11 @@ CHECKER.checker = (function() {
         var that = this;
         var hasErrors = false;
 
+        invalidFields = [];
+
         _.forEach(checkedItems, function (item, i) {
             if (that.validateField(item.field)) {
+                invalidFields.push(item.field);
                 hasErrors = true;
             }
         });
