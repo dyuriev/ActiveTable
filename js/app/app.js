@@ -216,10 +216,6 @@ $(function() {
         }
     });
 
-    /*$('button.close').on('click', function() {
-        closeModal($(this).attr('data-modal-id'));
-    });*/
-
     $('[data-modal-opener]').on('click', function() {
         var modalID = $(this).attr('data-modal-opener');
         openModal(modalID);
