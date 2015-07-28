@@ -24,7 +24,6 @@
             <div class="controls">
                 <div class="pull-left">
                     <input type="text" class="input-filter" placeholder="Live filter by product name">
-                    <!-- <a href="#" class="btn btn-info btn-filter">Filter</a>-->
                 </div>
                 <div class="pull-right">
                     <button class="btn btn-success btnAddProduct" data-modal-opener="modalForm">Add product</button>
@@ -48,7 +47,7 @@
                     <div class="modal-content">
                         <div class="modal-header">
                             <button type="button" data-modal-closer="modalForm" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                            <h4 class="modal-title" id="myModalLabel">Add new product</h4>
+                            <h4 class="modal-title" id="myModalLabel">Add or edit product</h4>
                         </div>
                         <div class="modal-body">
                             <form id="formAddItem" method="get" action="" data-checker-validate="true" enctype="application/x-www-form-urlencoded">
@@ -78,19 +77,18 @@
                                 </div>
                                 <div class="form-group radio-group1 hidden-group">
                                     <label>Radio Group</label>
-
                                     <div class="radio">
                                         <label>
                                             <input type="radio" name="radio-1" value="1">
                                             Option 1
                                         </label>
-                                    </div> <!-- /.radio -->
+                                    </div>
                                     <div class="radio">
                                         <label>
                                             <input type="radio" name="radio-1" value="2">
                                             Option 2
                                         </label>
-                                    </div> <!-- /.radio -->
+                                    </div>
                                     <div class="radio">
                                         <label>
                                             <input type="radio" name="radio-1" value="3">
@@ -105,26 +103,26 @@
                                             <input type="checkbox" name="select-checkboxes1">
                                             Select All
                                         </label>
-                                    </div> <!-- /.checkbox -->
+                                    </div>
                                     <hr>
                                     <div class="checkbox">
                                         <label>
                                             <input type="checkbox" name="checkbox-1">
                                             Option 1
                                         </label>
-                                    </div> <!-- /.checkbox -->
+                                    </div>
                                     <div class="checkbox">
                                         <label>
                                             <input type="checkbox" name="checkbox-2">
                                             Option 2
                                         </label>
-                                    </div> <!-- /.checkbox -->
+                                    </div>
                                     <div class="checkbox">
                                         <label>
                                             <input type="checkbox" name="checkbox-3">
                                             Option 3
                                         </label>
-                                    </div> <!-- /.checkbox -->
+                                    </div>
                                 </div>
                                 <div class="pull-right">
                                     <button type="submit" class="btn btn-primary btn-submit">Add / Update</button>
@@ -202,11 +200,9 @@
 <script type="text/javascript" src="js/libs/lodash.min.js"></script>
 <script type="text/javascript" src="js/libs/bootstrap.min.js"></script>
 <script type="text/javascript" src="js/app/helpers.js"></script>
-<!--<script type="text/javascript" src="js/app/checker.js"></script>-->
 <script type="text/javascript" src="js/app/checker/init.js"></script>
 <script type="text/javascript" src="js/app/checker/validators.js"></script>
 <script type="text/javascript" src="js/app/checker/checker.js"></script>
 <script type="text/javascript" src="js/app/app.js"></script>
-
 </body>
 </html>
